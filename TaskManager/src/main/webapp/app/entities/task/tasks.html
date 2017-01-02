@@ -1,0 +1,149 @@
+<div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //Helper function to keep table row from collapsing when being sorted
+            var fixHelperModified = function(e, tr) {
+                var $originals = tr.children();
+                var $helper = tr.clone();
+                $helper.children().each(function(index)
+                {
+                    $(this).width($originals.eq(index).width())
+                });
+                return $helper;
+            };
+
+            //Make diagnosis table sortable
+            $("#diagnosis_list tbody").sortable({
+                helper: fixHelperModified,
+                stop: function(event,ui) {renumber_table('#diagnosis_list')}
+            }).disableSelection();
+
+            //Delete button in table rows
+            $('table').on('click','.btn-delete',function() {
+                tableID = '#' + $(this).closest('table').attr('id');
+                r = confirm('Delete this item?');
+                if(r) {
+                    $(this).closest('tr').remove();
+                    renumber_table(tableID);
+                }
+            });
+        });
+
+        //Renumber table rows
+        function renumber_table(tableID) {
+            $(tableID + " tr").each(function() {
+                count = $(this).parent().children().index($(this)) + 1;
+                $(this).find('.priority').html(count);
+            });
+        }
+
+
+
+    </script>
+
+
+    <h2><center>Your tasks</center></h2>
+    <table class="table" id="diagnosis_list">
+        <thead>
+        <tr>
+            <th><span>ID</span></th>
+            <th><span>Name</span></th>
+            <th><span>Description</span></th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="task in vm.tasks track by task.id" ng-if="task.owner.id === 3" >
+            <td><a ui-sref="task-detail({id:task.id})">{{task.id}}</a></td>
+            <td>{{task.name}}</td>
+            <td>{{task.description}}</td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+
+    <h2><center>All tasks
+
+   </center></h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="task.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span >
+                        Create new Task
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="table" id="diagnosis_list">
+            <thead>
+                <tr>
+                    <th><span>ID</span></th>
+                    <th><span>Name</span></th>
+                    <th><span>Description</span></th>
+                    <th><span>Owner</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="task in vm.tasks track by task.id">
+                    <td><a ui-sref="task-detail({id:task.id})">{{task.id}}</a></td>
+                    <td>{{task.name}}</td>
+                    <td>{{task.description}}</td>
+                    <td>
+                        {{task.owner.login}}
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="task-detail({id:task.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="task.edit({id:task.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="task.delete({id:task.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+            <tr> <td><b> TO DO </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td></tr>
+            <tr> <td><b> PLAN </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td> </tr>
+            <tr> <td><b> DEVELOP </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td> </tr>
+            <tr> <td><b> TEST </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td> </tr>
+            <tr> <td><b> DEPLOY </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td> </tr>
+                <tr> <td><b> DONE </b></td><td></td><td></td><td></td><td class="text-right"> <a class='btn btn-delete btn-danger'><span class="glyphicon glyphicon-remove-circle"></span></a></td> </tr>
+
+
+
+            </tbody>
+
+        </table>
+
+
+
+
+
+</div>
+    </div>
+</div>
